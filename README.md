@@ -6,11 +6,7 @@ The system combines **machine learning, spatial clustering, SQL analytics, and i
 
 ---
 
-## 🏆 Hackathon Project
 
-**Hackathon:** HackIndia Spark-12  
-**Location:** Jaipur, Rajasthan  
-**Project Theme:** Road Safety / Artificial Intelligence / Data Analytics
 
 ---
 
