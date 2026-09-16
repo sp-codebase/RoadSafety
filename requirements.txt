@@ -1,0 +1,14 @@
+# python -m pip install -r backend/requirements.txt
+# python -m pip list
+# to reload fastapi - python -m uvicorn backend.main:app --reload
+#to install uviconr - py -m pip install uvicorn
+#to install fast api -py -m pip install fastapi uvicorn pydantic 
+# to view swagger docs - http://127.0.0.1:8000/docs
+
+fastapi
+uvicorn[standard]
+pandas
+joblib
+scikit-learn
+sqlalchemy
+pyodbc

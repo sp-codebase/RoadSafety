@@ -1,10 +1,8 @@
+import pyodbc
 import pandas as pd
+import joblib
 
 from sklearn.model_selection import train_test_split
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.pipeline import Pipeline
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -13,44 +11,76 @@ from sklearn.metrics import (
 
 
 # ==========================================
-# 1. Load dataset
+# 1. Load trained model
 # ==========================================
 
-DATA_PATH = r"C:\Users\sonal\OneDrive\Desktop\roadSafety-Project\data\clean_etp_accidents.csv"
+MODEL_PATH = "ml/indian_road_safety_model.joblib"
 
-df = pd.read_csv(DATA_PATH)
+pipeline = joblib.load(MODEL_PATH)
+
+print("Model loaded successfully!")
+
+
+# ==========================================
+# 2. Connect to SQL Server
+# ==========================================
+
+connection = pyodbc.connect(
+    "DRIVER={ODBC Driver 17 for SQL Server};"
+    "SERVER=localhost;"
+    "DATABASE=RoadSafetyDB;"
+    "Trusted_Connection=yes;"
+)
+
+print("SQL Server connected successfully!")
+
+
+# ==========================================
+# 3. Load dataset from SQL Server
+# ==========================================
+
+query = """
+SELECT *
+FROM external_data.indian_road_accidents
+"""
+
+df = pd.read_sql(query, connection)
+
+connection.close()
 
 print("Dataset loaded successfully!")
 print("Shape:", df.shape)
 
 
 # ==========================================
-# 2. Features and target
+# 4. Features and target
 # ==========================================
 
 features = [
-    "Day_of_Week",
-    "Month",
-    "Hour",
-    "IsWeekend",
-    "Accident_Location_A",
-    "Accident_Location_A_Chainage_km",
-    "Accident_Location_A_Chainage_km_RoadSide",
-    "Causes_D",
-    "Road_Feature_E",
-    "Road_Condition_F",
-    "Weather_Conditions_H",
-    "Vehicle_Type_Involved_J_V1"
+    "city",
+    "state",
+    "latitude",
+    "longitude",
+    "hour",
+    "day_of_week",
+    "is_weekend",
+    "road_type",
+    "lanes",
+    "traffic_signal",
+    "weather",
+    "temperature",
+    "cause",
+    "is_peak_hour"
 ]
 
-target = "Accident_Severity_C"
+target = "accident_severity"
 
 X = df[features]
 y = df[target]
 
 
 # ==========================================
-# 3. Train/Test Split
+# 5. Create SAME train/test split
 # ==========================================
 
 X_train, X_test, y_train, y_test = train_test_split(
@@ -61,94 +91,22 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 )
 
-
-# ==========================================
-# 4. Feature types
-# ==========================================
-
-numeric_features = [
-    "Hour",
-    "Accident_Location_A_Chainage_km"
-]
-
-categorical_features = [
-    "Day_of_Week",
-    "Month",
-    "IsWeekend",
-    "Accident_Location_A",
-    "Accident_Location_A_Chainage_km_RoadSide",
-    "Causes_D",
-    "Road_Feature_E",
-    "Road_Condition_F",
-    "Weather_Conditions_H",
-    "Vehicle_Type_Involved_J_V1"
-]
+print("\nTest data:", X_test.shape)
 
 
 # ==========================================
-# 5. Preprocessor
+# 6. Predict
 # ==========================================
 
-preprocessor = ColumnTransformer(
-    transformers=[
-        (
-            "categorical",
-            OneHotEncoder(handle_unknown="ignore"),
-            categorical_features
-        ),
-        (
-            "numeric",
-            "passthrough",
-            numeric_features
-        )
-    ]
-)
-
-
-# ==========================================
-# 6. Random Forest
-# ==========================================
-
-model = RandomForestClassifier(
-    n_estimators=300,
-    random_state=42,
-    class_weight="balanced",
-    n_jobs=-1
-)
-
-
-# ==========================================
-# 7. Complete pipeline
-# ==========================================
-
-pipeline = Pipeline(
-    steps=[
-        ("preprocessor", preprocessor),
-        ("model", model)
-    ]
-)
-
-
-# ==========================================
-# 8. Train
-# ==========================================
-
-print("\nTraining model...")
-
-pipeline.fit(X_train, y_train)
-
-print("Training completed!")
-
-
-# ==========================================
-# 9. Predict test data
-# ==========================================
+print("\nGenerating predictions...")
 
 y_pred = pipeline.predict(X_test)
 
+print("Prediction completed!")
+
 
 # ==========================================
-# 10. Accuracy
+# 7. Accuracy
 # ==========================================
 
 accuracy = accuracy_score(y_test, y_pred)
@@ -162,7 +120,7 @@ print(f"Accuracy: {accuracy * 100:.2f}%")
 
 
 # ==========================================
-# 11. Classification Report
+# 8. Classification Report
 # ==========================================
 
 print("\n==========================================")
@@ -179,16 +137,24 @@ print(
 
 
 # ==========================================
-# 12. Confusion Matrix
+# 9. Confusion Matrix
 # ==========================================
 
 print("\n==========================================")
 print("CONFUSION MATRIX")
 print("==========================================")
 
-cm = confusion_matrix(y_test, y_pred)
+labels = ["Minor", "Major", "Fatal"]
 
-print(cm)
+cm = confusion_matrix(
+    y_test,
+    y_pred,
+    labels=labels
+)
 
+print("\n              Predicted")
+print("              Minor  Major  Fatal")
 
-# print("\nStep 6 evaluation completed!")
+print(f"Actual Minor  {cm[0][0]:5}  {cm[0][1]:5}  {cm[0][2]:5}")
+print(f"Actual Major  {cm[1][0]:5}  {cm[1][1]:5}  {cm[1][2]:5}")
+print(f"Actual Fatal  {cm[2][0]:5}  {cm[2][1]:5}  {cm[2][2]:5}")

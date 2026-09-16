@@ -88,3 +88,64 @@ class RiskPredictionResponse(BaseModel):
     top_contributing_factors: List[Dict[str, Any]]
 
     preventive_recommendations: List[str]
+
+
+
+# ==========================================
+# Scenario Risk Assessment Request
+# ==========================================
+
+class ScenarioRiskRequest(BaseModel):
+
+    road_type: str = Field(
+        ...,
+        description="Road type: Highway, Rural, or Urban"
+    )
+
+    weather: str = Field(
+        ...,
+        description="Weather: Clear, Fog, or Rain"
+    )
+
+    hour: int = Field(
+        ...,
+        ge=0,
+        le=23,
+        description="Hour of the scenario (0-23)"
+    )
+
+    lanes: int = Field(
+        ...,
+        ge=1,
+        description="Number of road lanes"
+    )
+
+    traffic_signal: int = Field(
+        ...,
+        description="1 if traffic signal exists, 0 otherwise"
+    )
+
+    cause: str = Field(
+        ...,
+        description="Primary contributing condition"
+    )
+
+    is_peak_hour: int = Field(
+        ...,
+        description="1 if peak hour, 0 otherwise"
+    )
+
+
+# ==========================================
+# Scenario Risk Assessment Response
+# ==========================================
+
+class ScenarioRiskResponse(BaseModel):
+
+    risk_level: str
+
+    score: int
+
+    factors: List[str]
+
+    recommendations: List[str]    

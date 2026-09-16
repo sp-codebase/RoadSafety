@@ -6,15 +6,22 @@ import os
 import joblib
 import pandas as pd
 
+from ml.risk_engine import assess_risk
+
 from sqlalchemy import text
 from backend.database import engine
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 
 from backend.schemas import (
     RiskPredictionRequest,
-    RiskPredictionResponse
+    RiskPredictionResponse,
+    ScenarioRiskRequest,
+    ScenarioRiskResponse
 )
+
+from ml.risk_engine import assess_risk
 
 
 # ==========================================
@@ -25,6 +32,17 @@ app = FastAPI(
     title="Road Safety Intelligence API",
     description="AI-based road safety and accident intelligence system",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -68,6 +86,34 @@ def health_check():
         "status": "online",
         "model_loaded": model is not None
     }
+
+# ==========================================
+# Scenario-Based Risk Assessment
+# ==========================================
+
+@app.post("/api/risk-assessment")
+def risk_assessment(req: ScenarioRiskRequest):
+
+    try:
+
+        result = assess_risk(
+            road_type=req.road_type,
+            weather=req.weather,
+            hour=req.hour,
+            lanes=req.lanes,
+            traffic_signal=req.traffic_signal,
+            cause=req.cause,
+            is_peak_hour=req.is_peak_hour
+        )
+
+        return result
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Risk assessment failed: {str(e)}"
+        )
 
 # ==========================================
 # Accident Severity Prediction

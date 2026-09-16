@@ -24,7 +24,7 @@ print("SQL Server connected successfully!")
 
 
 # ==========================================
-# 2. Load dataset from SQL Server
+# 2. Load dataset
 # ==========================================
 
 query = """
@@ -36,7 +36,7 @@ df = pd.read_sql(query, connection)
 
 connection.close()
 
-print("\nDataset loaded successfully!")
+print("Dataset loaded successfully!")
 print("Shape:", df.shape)
 
 
@@ -44,11 +44,10 @@ print("Shape:", df.shape)
 # 3. Select features
 # ==========================================
 
+# Latitude and longitude intentionally removed
 features = [
     "city",
     "state",
-    "latitude",
-    "longitude",
     "hour",
     "day_of_week",
     "is_weekend",
@@ -63,19 +62,8 @@ features = [
 
 target = "accident_severity"
 
-
 X = df[features]
 y = df[target]
-
-
-print("\nFeatures selected:")
-print(features)
-
-print("\nTarget:")
-print(target)
-
-print("\nTarget distribution:")
-print(y.value_counts())
 
 
 # ==========================================
@@ -100,8 +88,6 @@ print("Testing:", X_test.shape)
 # ==========================================
 
 numeric_features = [
-    "latitude",
-    "longitude",
     "hour",
     "lanes",
     "temperature"
@@ -153,7 +139,7 @@ model = RandomForestClassifier(
 
 
 # ==========================================
-# 8. Complete ML Pipeline
+# 8. Pipeline
 # ==========================================
 
 pipeline = Pipeline(
@@ -168,7 +154,7 @@ pipeline = Pipeline(
 # 9. Train
 # ==========================================
 
-print("\nTraining Random Forest...")
+print("\nTraining Random Forest without coordinates...")
 
 pipeline.fit(X_train, y_train)
 
@@ -184,17 +170,14 @@ predictions = pipeline.predict(X_test)
 print("\nPrediction completed!")
 print("Number of predictions:", len(predictions))
 
-print("\nFirst 10 predictions:")
-print(predictions[:10])
-
 
 # ==========================================
-# 11. Save model
+# 11. Save Model B
 # ==========================================
 
-MODEL_PATH = "ml/indian_road_safety_model.joblib"
+MODEL_PATH = "ml/indian_road_safety_model_no_location.joblib"
 
 joblib.dump(pipeline, MODEL_PATH)
 
-print("\nModel pipeline saved successfully!")
+print("\nModel saved successfully!")
 print("Saved as:", MODEL_PATH)
