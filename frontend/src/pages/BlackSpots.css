@@ -1,0 +1,1248 @@
+/* =========================================================
+   BLACK SPOTS PAGE
+========================================================= */
+
+.black-spots-page {
+  min-height: 100vh;
+  padding: 28px;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(220, 38, 38, 0.04),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      #f7f8fa 0%,
+      #f1f3f6 100%
+    );
+  color: #172033;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.blackspots-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 28px;
+  margin-bottom: 22px;
+}
+
+.page-eyebrow,
+.card-kicker {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7a8494;
+}
+
+.blackspots-header h1 {
+  margin: 7px 0 8px;
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #111827;
+}
+
+.blackspots-header p {
+  margin: 0;
+  max-width: 720px;
+  color: #667085;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   STATE SELECTOR
+========================================================= */
+
+.state-selector-box {
+  min-width: 230px;
+  padding: 14px;
+  border: 1px solid #e3e7ed;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.state-selector-box span {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8a93a3;
+}
+
+.state-selector-box select {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #182230;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   MAP GUIDE
+========================================================= */
+
+.map-reading-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  border: 1px solid #e5e9ef;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow:
+    0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+.map-reading-strip > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.map-reading-strip strong {
+  font-size: 13px;
+  color: #182230;
+}
+
+.map-reading-strip span {
+  font-size: 12px;
+  color: #7a8494;
+}
+
+.map-status-guide {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+.map-status-guide span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+  color: #5f6877;
+}
+
+.guide-dot,
+.legend-dot,
+.status-big-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border-radius: 50%;
+}
+
+.critical {
+  background: #dc2626;
+}
+
+.high {
+  background: #f97316;
+}
+
+.emerging {
+  background: #9ca3af;
+}
+
+.watch {
+  background: #eab308;
+}
+
+.monitored {
+  background: #16a34a;
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.blackspots-summary {
+  display: grid;
+  grid-template-columns:
+    repeat(6, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 112px;
+  padding: 18px;
+  border: 1px solid #e4e8ee;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow:
+    0 10px 26px rgba(15, 23, 42, 0.05);
+}
+
+.summary-card::after {
+  content: "";
+  position: absolute;
+  right: -18px;
+  bottom: -18px;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.summary-card span {
+  display: block;
+  margin-bottom: 8px;
+  color: #7b8492;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.summary-card strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #172033;
+}
+
+.summary-card small {
+  color: #8b94a3;
+  font-size: 11px;
+}
+
+.summary-card.danger {
+  border-top: 3px solid #dc2626;
+}
+
+.summary-card.orange {
+  border-top: 3px solid #f97316;
+}
+
+.summary-card.gray {
+  border-top: 3px solid #9ca3af;
+}
+
+.summary-card.yellow {
+  border-top: 3px solid #eab308;
+}
+
+.summary-card.green {
+  border-top: 3px solid #16a34a;
+}
+
+
+/* =========================================================
+   MAIN GRID
+========================================================= */
+
+.blackspots-main-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.7fr)
+    minmax(350px, 0.9fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.blackspots-map-card,
+.blackspots-intelligence-card {
+  border: 1px solid #e1e6ec;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   CARD HEADING
+========================================================= */
+
+.card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px 20px 16px;
+}
+
+.card-heading h2 {
+  margin: 6px 0 0;
+  font-size: 20px;
+  line-height: 1.15;
+  color: #172033;
+  letter-spacing: -0.02em;
+}
+
+.map-count {
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #f3f5f8;
+  color: #616b7a;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   MAP
+========================================================= */
+
+.blackspots-map-wrapper {
+  position: relative;
+  height: 560px;
+  margin: 0 14px 14px;
+  overflow: hidden;
+  border: 1px solid #e7eaef;
+  border-radius: 17px;
+  background: #edf1f4;
+}
+
+.blackspots-map {
+  width: 100%;
+  height: 100%;
+}
+
+.leaflet-container {
+  font-family: inherit;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow:
+    0 8px 18px rgba(15, 23, 42, 0.12)
+    !important;
+}
+
+.leaflet-control-zoom a {
+  width: 34px !important;
+  height: 34px !important;
+  line-height: 34px !important;
+  border: none !important;
+  color: #273244 !important;
+  background: #ffffff !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #f2f4f7 !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 14px;
+}
+
+.leaflet-popup-content {
+  margin: 13px 15px;
+}
+
+
+/* =========================================================
+   MAP LEGEND
+========================================================= */
+
+.blackspots-map-legend {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: 1000;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  min-width: 156px;
+  padding: 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.94);
+
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 10px 28px rgba(15, 23, 42, 0.14);
+}
+
+.blackspots-map-legend strong {
+  margin-bottom: 2px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #434d5d;
+}
+
+.blackspots-map-legend span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #5f6877;
+}
+
+
+/* =========================================================
+   MAP POPUP
+========================================================= */
+
+.map-popup {
+  min-width: 190px;
+}
+
+.map-popup strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 14px;
+  color: #172033;
+}
+
+.map-popup > span {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 11px;
+  color: #7d8796;
+}
+
+.map-popup hr {
+  margin: 8px 0;
+  border: none;
+  border-top: 1px solid #e7eaf0;
+}
+
+.map-popup div {
+  margin-top: 5px;
+  font-size: 11px;
+  color: #606b7a;
+}
+
+.map-popup b {
+  color: #273244;
+}
+
+.popup-details-btn {
+  width: 100%;
+  margin-top: 11px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: #172033;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.popup-details-btn:hover {
+  background: #2b3546;
+}
+
+
+/* =========================================================
+   INTELLIGENCE PANEL
+========================================================= */
+
+.blackspots-intelligence-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.blackspots-intelligence-card
+.card-heading {
+  padding-bottom: 13px;
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.hotspot-search {
+  padding: 0 16px 12px;
+}
+
+.hotspot-search input {
+  width: 100%;
+  height: 42px;
+  padding: 0 13px;
+  border: 1px solid #dde2e9;
+  border-radius: 11px;
+  outline: none;
+  background: #fafbfc;
+  color: #1e293b;
+  font-size: 12px;
+  transition: 0.2s ease;
+}
+
+.hotspot-search input::placeholder {
+  color: #9aa3b0;
+}
+
+.hotspot-search input:focus {
+  border-color: #aab4c2;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 3px rgba(148, 163, 184, 0.1);
+}
+
+
+/* =========================================================
+   FILTER BUTTONS
+========================================================= */
+
+.status-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 0 16px 14px;
+}
+
+.status-filter-row button {
+  border: 1px solid #e0e4ea;
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: #f8f9fb;
+  color: #697384;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.status-filter-row button:hover {
+  background: #f0f2f5;
+}
+
+.status-filter-row button.active {
+  color: #172033;
+  background: #e9edf2;
+  border-color: #cfd5dd;
+}
+
+.status-filter-row
+button.critical-btn.active {
+  color: #991b1b;
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.status-filter-row
+button.high-btn.active {
+  color: #c2410c;
+  border-color: #fed7aa;
+  background: #fff7ed;
+}
+
+.status-filter-row
+button.emerging-btn.active {
+  color: #4b5563;
+  border-color: #d1d5db;
+  background: #f3f4f6;
+}
+
+.status-filter-row
+button.watch-btn.active {
+  color: #a16207;
+  border-color: #fde68a;
+  background: #fefce8;
+}
+
+.status-filter-row
+button.monitored-btn.active {
+  color: #166534;
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+
+/* =========================================================
+   HOTSPOT LIST
+========================================================= */
+
+.hotspot-list {
+  flex: 1;
+  min-height: 300px;
+  max-height: 650px;
+  overflow-y: auto;
+  padding: 0 12px 14px;
+}
+
+.hotspot-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.hotspot-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.hotspot-list::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background: #d7dce3;
+}
+
+
+/* =========================================================
+   HOTSPOT CARD
+========================================================= */
+
+.hotspot-list-item {
+  display: block;
+  width: 100%;
+  margin-bottom: 9px;
+  padding: 13px;
+
+  text-align: left;
+
+  border: 1px solid #e4e8ed;
+  border-radius: 14px;
+  background: #ffffff;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.hotspot-list-item:hover {
+  transform: translateY(-1px);
+  border-color: #cbd2dc;
+  box-shadow:
+    0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.hotspot-list-item.selected {
+  border-color: #8e99a8;
+  box-shadow:
+    0 0 0 3px rgba(148, 163, 184, 0.12);
+}
+
+.hotspot-item-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hotspot-item-top > div {
+  min-width: 0;
+}
+
+.hotspot-item-top strong {
+  display: block;
+  overflow: hidden;
+  color: #1d2939;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hotspot-item-top span:not(.hotspot-status) {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  color: #8b94a2;
+}
+
+.hotspot-status {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.hotspot-item-data {
+  display: grid;
+  grid-template-columns:
+    repeat(3, 1fr);
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.hotspot-item-data span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  border-radius: 9px;
+  background: #f7f8fa;
+  color: #8b94a2;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hotspot-item-data b {
+  font-size: 12px;
+  color: #253044;
+}
+
+.hotspot-item-data .trend-up {
+  color: #dc2626;
+  font-weight: 800;
+}
+
+.hotspot-item-data .trend-down {
+  color: #16a34a;
+  font-weight: 800;
+}
+
+.hotspot-item-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.hotspot-item-bottom span {
+  display: inline-flex;
+  max-width: 50%;
+  overflow: hidden;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #f2f4f7;
+  color: #687282;
+  font-size: 9px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   VIEW IN MAP BUTTON
+========================================================= */
+
+.view-map-button {
+  width: 100%;
+  margin-top: 11px;
+  padding: 9px 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  border: 1px solid #d9dee6;
+  border-radius: 10px;
+
+  background: #f7f8fa;
+  color: #3f4a5a;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.view-map-button:hover {
+  background: #eef1f4;
+  border-color: #bfc7d2;
+  transform: translateY(-1px);
+}
+
+.view-map-button span {
+  font-size: 15px;
+  line-height: 1;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.no-hotspots {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  margin: 6px;
+  border: 1px dashed #d6dbe3;
+  border-radius: 14px;
+  background: #fafbfc;
+  text-align: center;
+}
+
+.no-hotspots strong {
+  margin-bottom: 5px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.no-hotspots span {
+  font-size: 11px;
+  color: #9099a8;
+}
+
+
+/* =========================================================
+   SELECTED HOTSPOT PANEL
+========================================================= */
+
+.selected-hotspot-panel {
+  margin-top: 20px;
+  padding: 22px;
+  border: 1px solid #e1e6ec;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.05);
+
+  animation: detailReveal 0.35s ease both;
+}
+
+.selected-hotspot-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.selected-hotspot-heading h2 {
+  margin: 6px 0 5px;
+  font-size: 23px;
+  color: #172033;
+  letter-spacing: -0.02em;
+}
+
+.selected-hotspot-heading p {
+  margin: 0;
+  color: #818b9b;
+  font-size: 12px;
+}
+
+.selected-hotspot-heading button {
+  border: 1px solid #dfe4eb;
+  border-radius: 9px;
+  padding: 8px 12px;
+  background: #f8f9fb;
+  color: #5f6978;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.selected-hotspot-heading button:hover {
+  background: #f1f3f6;
+}
+
+
+/* =========================================================
+   DETAIL GRID
+========================================================= */
+
+.selected-hotspot-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.detail-box {
+  min-height: 130px;
+  padding: 16px;
+  border: 1px solid #e4e8ee;
+  border-radius: 15px;
+  background: #fafbfc;
+}
+
+.detail-box > span {
+  display: block;
+  margin-bottom: 9px;
+  color: #8a93a2;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.detail-box strong {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 17px;
+  line-height: 1.25;
+  color: #1f2937;
+}
+
+.detail-box small {
+  display: block;
+  color: #778191;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.risk-detail strong {
+  font-size: 27px;
+  letter-spacing: -0.03em;
+}
+
+
+/* =========================================================
+   PROBLEM SECTION
+========================================================= */
+
+.problem-section {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #e3e7ec;
+  border-radius: 16px;
+  background: #fafbfc;
+}
+
+.section-title h3 {
+  margin: 6px 0 15px;
+  font-size: 17px;
+  color: #1d2939;
+}
+
+.problem-list {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.problem-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 78px;
+  padding: 12px;
+  border: 1px solid #e3e7ec;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.problem-item > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+
+  border-radius: 50%;
+  background: #fff1f2;
+  color: #dc2626;
+
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.problem-item p {
+  margin: 2px 0 0;
+  color: #5f6978;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   ACTION PLAN
+========================================================= */
+
+.action-plan-box {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #e1e6ec;
+  border-radius: 16px;
+  background:
+    linear-gradient(
+      135deg,
+      #fafbfc 0%,
+      #f3f5f7 100%
+    );
+}
+
+.action-plan-box h3 {
+  margin: 6px 0 15px;
+  font-size: 17px;
+  color: #1d2939;
+}
+
+.action-plan-list {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.action-plan-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 78px;
+  padding: 12px;
+  border: 1px solid #dfe4ea;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.action-plan-item > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+
+  border-radius: 50%;
+  background: #eef1f4;
+  color: #495466;
+
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.action-plan-item p {
+  margin: 2px 0 0;
+  color: #5d6877;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   STATUS EXPLANATION
+========================================================= */
+
+.status-explanation-panel {
+  display: grid;
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.status-explanation-panel > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px;
+  border: 1px solid #e4e8ed;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.status-big-dot {
+  width: 11px;
+  height: 11px;
+  flex-basis: 11px;
+  margin-top: 3px;
+}
+
+.status-explanation-panel strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #3b4555;
+  font-size: 11px;
+}
+
+.status-explanation-panel small {
+  display: block;
+  color: #8b94a2;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+@keyframes detailReveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1400px) {
+  .blackspots-summary {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .selected-hotspot-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .problem-list,
+  .action-plan-list {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .status-explanation-panel {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1150px) {
+  .blackspots-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .blackspots-intelligence-card {
+    min-height: 500px;
+  }
+
+  .hotspot-list {
+    max-height: 560px;
+  }
+
+  .map-reading-strip {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .map-status-guide {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 850px) {
+  .black-spots-page {
+    padding: 18px;
+  }
+
+  .blackspots-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .state-selector-box {
+    width: 100%;
+  }
+
+  .blackspots-summary {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .status-explanation-panel {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .problem-list,
+  .action-plan-list {
+    grid-template-columns: 1fr;
+  }
+
+  .blackspots-map-wrapper {
+    height: 480px;
+  }
+}
+
+@media (max-width: 600px) {
+  .black-spots-page {
+    padding: 14px;
+  }
+
+  .blackspots-header h1 {
+    font-size: 29px;
+  }
+
+  .blackspots-header p {
+    font-size: 13px;
+  }
+
+  .map-reading-strip {
+    padding: 14px;
+  }
+
+  .map-status-guide {
+    gap: 9px;
+  }
+
+  .map-status-guide span {
+    font-size: 10px;
+  }
+
+  .blackspots-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .selected-hotspot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .status-explanation-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .selected-hotspot-heading {
+    flex-direction: column;
+  }
+
+  .selected-hotspot-heading button {
+    width: 100%;
+  }
+
+  .blackspots-map-wrapper {
+    height: 420px;
+    margin: 0 10px 10px;
+  }
+
+  .card-heading {
+    padding: 17px 15px 13px;
+  }
+
+  .card-heading h2 {
+    font-size: 18px;
+  }
+
+  .hotspot-item-data {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+}
