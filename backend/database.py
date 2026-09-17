@@ -2,18 +2,20 @@
 Database connection for Road Safety Intelligence API.
 """
 
+import os
+
 from sqlalchemy import create_engine, text
 
 
 # ==========================================
-# SQL Server Connection
+# Render PostgreSQL Connection
 # ==========================================
 
-CONNECTION_STRING = (
-    "mssql+pyodbc://@localhost/RoadSafetyDB"
-    "?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
-)
-
+CONNECTION_STRING = os.getenv("RENDER_DATABASE_URL")
+if not CONNECTION_STRING:
+    raise RuntimeError(
+        "RENDER_DATABASE_URL environment variable is not set."
+    )
 
 # ==========================================
 # Create SQLAlchemy Engine

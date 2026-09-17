@@ -326,7 +326,7 @@ def get_hotspots(
             SELECT
                 cluster_id,
                 state_ut,
-                Million_Plus_City,
+                "Million_Plus_City",
                 COUNT(*) AS location_crashes
 
             FROM clean.news_crashes_with_clusters
@@ -336,7 +336,7 @@ def get_hotspots(
             GROUP BY
                 cluster_id,
                 state_ut,
-                Million_Plus_City
+                "Million_Plus_City"
         ),
 
         ranked_locations AS (
@@ -344,17 +344,17 @@ def get_hotspots(
             SELECT
                 cluster_id,
                 state_ut,
-                Million_Plus_City,
+                "Million_Plus_City",
 
                 ROW_NUMBER() OVER (
                     PARTITION BY cluster_id
                     ORDER BY
                         location_crashes DESC,
                         CASE
-                            WHEN Million_Plus_City = 'Nil' THEN 1
+                            WHEN "Million_Plus_City" = 'Nil' THEN 1
                             ELSE 0
                         END,
-                        Million_Plus_City
+                        "Million_Plus_City"
                 ) AS location_rank
 
             FROM cluster_locations
@@ -365,16 +365,16 @@ def get_hotspots(
 
             r.state_ut AS state,
 
-            r.Million_Plus_City AS city,
+            r."Million_Plus_City" AS city,
 
             COUNT(*) AS crash_count,
 
-            SUM(c.Killed) AS total_killed,
+            SUM(c."Killed") AS total_killed,
 
-            SUM(c.Injured) AS total_injured,
+            SUM(c."Injured") AS total_injured,
 
             CAST(
-                SUM(c.Killed) * 100.0
+                SUM(c."Killed") * 100.0
                 / NULLIF(COUNT(*), 0)
                 AS DECIMAL(10,2)
             ) AS fatalities_per_100_crashes,
@@ -394,7 +394,7 @@ def get_hotspots(
            GROUP BY
             c.cluster_id,
             r.state_ut,
-            r.Million_Plus_City
+            r."Million_Plus_City"
 
             ORDER BY
             crash_count DESC
