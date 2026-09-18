@@ -4,6 +4,10 @@
 #to install uviconr - py -m pip install uvicorn
 #to install fast api -py -m pip install fastapi uvicorn pydantic 
 # to view swagger docs - http://127.0.0.1:8000/docs
+#backend steps to run the app
+#$env:RENDER_DATABASE_URL="PASTE_YOUR_RENDER_EXTERNAL_DATABASE_URL_HERE"
+#if ($env:RENDER_DATABASE_URL) { "Render DB variable is set" } else { "Render DB variable is missing" }
+#python -m uvicorn backend.main:app --reload --port 8001
 
 fastapi
 uvicorn[standard]

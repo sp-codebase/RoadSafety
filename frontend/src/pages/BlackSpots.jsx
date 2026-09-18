@@ -74,6 +74,7 @@ function BlackSpots() {
         .filter((location) => location.distance <= 10)
         .sort((a, b) => a.distance - b.distance)
     : [];
+    
   useEffect(() => {
     const fetchHotspots = async () => {
       try {
