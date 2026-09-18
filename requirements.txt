@@ -16,3 +16,4 @@ joblib
 scikit-learn
 sqlalchemy
 pyodbc
+psycopg2-binary

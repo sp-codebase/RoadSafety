@@ -2,6 +2,7 @@
 Road Safety Intelligence API
 """
 
+
 import os
 import joblib
 import pandas as pd
@@ -40,8 +41,9 @@ app.add_middleware(
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:5174",
+    "http://localhost:5175",
 ],
-       
+
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -322,7 +324,7 @@ def get_hotspots(
 ):
 
     query = text("""
-            
+
         WITH cluster_locations AS (
 
             SELECT
@@ -400,7 +402,7 @@ def get_hotspots(
 
             ORDER BY
             crash_count DESC
-    
+
     """)
 
     try:
@@ -616,4 +618,426 @@ def get_locations(
             status_code=500,
             detail=f"Failed to fetch location data: {str(e)}"
         )
-    
+
+
+
+
+    # ==========================================
+# Reports and Emerging Risk Analysis
+# ==========================================
+
+@app.get("/api/reports")
+def get_reports(
+    state: str | None = Query(
+        default=None,
+        description="Filter report data by state"
+    )
+):
+    try:
+
+        with engine.connect() as connection:
+
+            # --------------------------------------
+            # 1. State Accident Trends
+            # --------------------------------------
+
+            state_accident_query = text("""
+                SELECT
+                    state_ut,
+                    "2020 Accidents" AS accidents_2020,
+                    "2021 Accidents" AS accidents_2021,
+                    "2022 Accidents" AS accidents_2022,
+                    "2023 Accidents" AS accidents_2023,
+                    "2024 Accidents" AS accidents_2024,
+                    "% change from 2023 to 2024" AS change_percent
+                FROM clean.states_road_accidents
+                WHERE state_ut IS NOT NULL
+                ORDER BY state_ut
+            """)
+
+            state_accident_result = connection.execute(
+                state_accident_query
+            )
+
+            state_accidents = []
+
+            for row in state_accident_result:
+                state_accidents.append({
+                    "state": row.state_ut,
+                    "accidents_2020": row.accidents_2020,
+                    "accidents_2021": row.accidents_2021,
+                    "accidents_2022": row.accidents_2022,
+                    "accidents_2023": row.accidents_2023,
+                    "accidents_2024": row.accidents_2024,
+                    "change_percent": row.change_percent
+                })
+
+                         # --------------------------------------
+            # 2. Monthly Accident Activity
+            # --------------------------------------
+
+            monthly_query = text("""
+                SELECT
+                    state_ut,
+                    "Month_Num" AS month_num,
+                    COUNT(*) AS accident_count
+                FROM clean.news_crashes_with_clusters
+                WHERE state_ut IS NOT NULL
+                  AND "Month_Num" BETWEEN 1 AND 12
+                GROUP BY
+                    state_ut,
+                    "Month_Num"
+                ORDER BY
+                    state_ut,
+                    "Month_Num"
+            """)
+
+            monthly_result = connection.execute(
+                monthly_query
+            )
+
+            monthly_activity = []
+
+            for row in monthly_result:
+                monthly_activity.append({
+                    "state": row.state_ut,
+                    "month": int(row.month_num),
+                    "accidents": int(row.accident_count or 0)
+                })
+
+            # --------------------------------------
+            # 2. State Fatality Trends
+            # --------------------------------------
+
+            state_fatality_query = text("""
+                SELECT
+                    state_ut,
+                    "2020 Killed" AS killed_2020,
+                    "2021 Killed" AS killed_2021,
+                    "2022 Killed" AS killed_2022,
+                    "2023 Killed" AS killed_2023,
+                    "2024 Killed" AS killed_2024,
+                    "% change from 2023 to 2024" AS change_percent
+                FROM clean.states_fatalities
+                WHERE state_ut IS NOT NULL
+                ORDER BY state_ut
+            """)
+
+            state_fatality_result = connection.execute(
+                state_fatality_query
+            )
+
+            state_fatalities = []
+
+            for row in state_fatality_result:
+                state_fatalities.append({
+                    "state": row.state_ut,
+                    "killed_2020": row.killed_2020,
+                    "killed_2021": row.killed_2021,
+                    "killed_2022": row.killed_2022,
+                    "killed_2023": row.killed_2023,
+                    "killed_2024": row.killed_2024,
+                    "change_percent": row.change_percent
+                })
+
+
+            # --------------------------------------
+            # 3. Vehicle Analysis
+            # --------------------------------------
+
+            vehicle_query = text("""
+                SELECT
+                    "Victim vehicle" AS vehicle,
+                    "Bicycles" AS bicycles,
+                    "Two Wheelers" AS two_wheelers,
+                    "Auto rickshaws" AS auto_rickshaws,
+                    "Cars Taxis Vans LMVs" AS cars_taxis_vans,
+                    "Trucks Lorries" AS trucks_lorries,
+                    "Buses" AS buses,
+                    "Other Non Motor Vehicles" AS other_non_motor,
+                    "Others" AS others,
+                    "Total" AS total
+                FROM clean.victims_crime_vehicle
+            """)
+
+            vehicle_result = connection.execute(vehicle_query)
+
+            vehicle_analysis = []
+
+            for row in vehicle_result:
+                vehicle_analysis.append({
+                    "vehicle": row.vehicle,
+                    "bicycles": row.bicycles,
+                    "two_wheelers": row.two_wheelers,
+                    "auto_rickshaws": row.auto_rickshaws,
+                    "cars_taxis_vans": row.cars_taxis_vans,
+                    "trucks_lorries": row.trucks_lorries,
+                    "buses": row.buses,
+                    "other_non_motor": row.other_non_motor,
+                    "others": row.others,
+                    "total": row.total
+                })
+
+
+            # --------------------------------------
+            # 4. Collision Analysis
+            # --------------------------------------
+
+            collision_query = text("""
+                SELECT
+                    "Type of collision" AS collision_type,
+                    "2023-Accidents" AS accidents_2023,
+                    "2023-Killed" AS killed_2023,
+                    "2023-injured" AS injured_2023,
+                    "2024-Accidents" AS accidents_2024,
+                    "2024-Killed" AS killed_2024,
+                    "2024-injured" AS injured_2024,
+                    "%Change-Accidents" AS change_accidents,
+                    "%Change-killed" AS change_killed,
+                    "%Change-Injured" AS change_injured
+                FROM clean.type_of_collision
+            """)
+
+            collision_result = connection.execute(collision_query)
+
+            collision_analysis = []
+
+            for row in collision_result:
+                collision_analysis.append({
+                    "collision_type": row.collision_type,
+                    "accidents_2023": row.accidents_2023,
+                    "killed_2023": row.killed_2023,
+                    "injured_2023": row.injured_2023,
+                    "accidents_2024": row.accidents_2024,
+                    "killed_2024": row.killed_2024,
+                    "injured_2024": row.injured_2024,
+                    "change_accidents": row.change_accidents,
+                    "change_killed": row.change_killed,
+                    "change_injured": row.change_injured
+                })
+
+
+            # --------------------------------------
+            # 5. Violation Analysis
+            # --------------------------------------
+
+            violation_query = text("""
+                SELECT
+                    "Category" AS category,
+                    "2023-Accidents" AS accidents_2023,
+                    "2023-Killed" AS killed_2023,
+                    "2023-injured" AS injured_2023,
+                    "2024-Accidents" AS accidents_2024,
+                    "2024-Killed" AS killed_2024,
+                    "2024-injured" AS injured_2024,
+                    "%Change-Accidents" AS change_accidents,
+                    "%Change-killed" AS change_killed,
+                    "%Change-Injured" AS change_injured
+                FROM clean.type_of_violation
+            """)
+
+            violation_result = connection.execute(violation_query)
+
+            violation_analysis = []
+
+            for row in violation_result:
+                violation_analysis.append({
+                    "category": row.category,
+                    "accidents_2023": row.accidents_2023,
+                    "killed_2023": row.killed_2023,
+                    "injured_2023": row.injured_2023,
+                    "accidents_2024": row.accidents_2024,
+                    "killed_2024": row.killed_2024,
+                    "injured_2024": row.injured_2024,
+                    "change_accidents": row.change_accidents,
+                    "change_killed": row.change_killed,
+                    "change_injured": row.change_injured
+                })
+
+
+            # --------------------------------------
+            # 6. DBSCAN Hotspot Summary
+            # --------------------------------------
+
+            hotspot_query = text("""
+                SELECT
+                    cluster_id,
+                    state_ut,
+                    "Million_Plus_City" AS city,
+                    COUNT(*) AS crash_count,
+                    SUM("Killed") AS total_killed,
+                    SUM("Injured") AS total_injured
+                FROM clean.news_crashes_with_clusters
+                WHERE cluster_id <> -1
+                GROUP BY
+                    cluster_id,
+                    state_ut,
+                    "Million_Plus_City"
+                ORDER BY crash_count DESC
+            """)
+
+            hotspot_result = connection.execute(hotspot_query)
+
+            hotspot_summary = []
+
+            for row in hotspot_result:
+                hotspot_summary.append({
+                    "cluster_id": int(row.cluster_id),
+                    "state": row.state_ut,
+                    "city": row.city,
+                    "crash_count": int(row.crash_count or 0),
+                    "total_killed": int(row.total_killed or 0),
+                    "total_injured": int(row.total_injured or 0)
+                })
+
+
+            # --------------------------------------
+            # 7. State-Level Emerging Risk
+            # --------------------------------------
+
+            # Use the 2023 -> 2024 accident change as
+            # the primary emerging-risk signal.
+            # This is an analytical indicator, not an
+            # official government classification.
+
+            grey_spots = []
+
+            for accident in state_accidents:
+
+                state_name = accident["state"]
+
+                try:
+                    accidents_2023 = float(
+                        str(accident["accidents_2023"]).replace(",", "")
+                    )
+
+                    accidents_2024 = float(
+                        str(accident["accidents_2024"]).replace(",", "")
+                    )
+
+                    change = float(
+                        str(accident["change_percent"])
+                        .replace("%", "")
+                        .replace(",", "")
+                    )
+
+                except (ValueError, TypeError):
+                    continue
+
+                # Calculate trend score.
+                # Positive growth increases emerging-risk score.
+                trend_score = max(
+                    0,
+                    min(100, 50 + (change * 2))
+                )
+
+                # Find DBSCAN hotspot activity for the state.
+                state_hotspots = [
+                    h for h in hotspot_summary
+                    if h["state"]
+                    and h["state"].strip().lower()
+                    == state_name.strip().lower()
+                ]
+
+                hotspot_count = len(state_hotspots)
+
+                hotspot_crashes = sum(
+                    h["crash_count"]
+                    for h in state_hotspots
+                )
+
+                # Historical hotspot component.
+                hotspot_score = min(
+                    100,
+                    hotspot_count * 5 + hotspot_crashes / 5
+                )
+
+                # Combined analytical score.
+                grey_score = round(
+                    trend_score * 0.60
+                    + hotspot_score * 0.40,
+                    2
+                )
+
+                if grey_score >= 70:
+                    status = "HIGH EMERGING RISK"
+                elif grey_score >= 50:
+                    status = "EMERGING GREY SPOT"
+                elif grey_score >= 30:
+                    status = "WATCH"
+                else:
+                    status = "NORMAL"
+
+                grey_spots.append({
+                    "state": state_name,
+                    "grey_spot_score": grey_score,
+                    "status": status,
+                    "accidents_2023": accidents_2023,
+                    "accidents_2024": accidents_2024,
+                    "change_percent": change,
+                    "hotspot_count": hotspot_count,
+                    "hotspot_crashes": hotspot_crashes
+                })
+
+
+            # Sort highest emerging risk first.
+            grey_spots.sort(
+                key=lambda x: x["grey_spot_score"],
+                reverse=True
+            )
+
+
+                     # --------------------------------------
+        # Apply optional state filter
+        # --------------------------------------
+
+        if state:
+            state_clean = state.strip().lower()
+
+            state_accidents = [
+                x for x in state_accidents
+                if x["state"]
+                and x["state"].strip().lower() == state_clean
+            ]
+
+            state_fatalities = [
+                x for x in state_fatalities
+                if x["state"]
+                and x["state"].strip().lower() == state_clean
+            ]
+
+            hotspot_summary = [
+                x for x in hotspot_summary
+                if x["state"]
+                and x["state"].strip().lower() == state_clean
+            ]
+
+            grey_spots = [
+                x for x in grey_spots
+                if x["state"]
+                and x["state"].strip().lower() == state_clean
+            ]
+
+
+        # --------------------------------------
+        # Return report data
+        # --------------------------------------
+
+        return {
+            "state_accidents": state_accidents,
+            "monthly_activity": monthly_activity,
+            "state_fatalities": state_fatalities,
+            "vehicle_analysis": vehicle_analysis,
+            "collision_analysis": collision_analysis,
+            "violation_analysis": violation_analysis,
+            "hotspot_summary": hotspot_summary,
+            "grey_spots": grey_spots
+        }
+
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate reports: {str(e)}"
+        )

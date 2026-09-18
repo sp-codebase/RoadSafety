@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -14,6 +14,7 @@ import "./BlackSpots.css";
 ========================================================= */
 
 const stateCenters = {
+  "All": [24.6, 74.8],
   Rajasthan: [26.9, 75.8],
   Punjab: [30.9, 75.8],
   Haryana: [29.0, 76.1],
@@ -23,562 +24,42 @@ const stateCenters = {
 };
 
 const connectedStates = [
-  "Rajasthan",
-  "Punjab",
-  "Haryana",
+  "All",
+  "Maharashtra",
   "Uttar Pradesh",
   "Madhya Pradesh",
+  "Tamil Nadu",
+  "Karnataka",
+  "Rajasthan",
+  "Andhra Pradesh",
+  "Telangana",
+  "Punjab",
+  "Haryana",
+  "West Bengal",
   "Gujarat",
+  "Delhi",
+  "Chhattisgarh",
+  "Uttarakhand",
+  "Kerala",
+  "Bihar",
+  "Jammu and Kashmir",
+  "Himachal Pradesh",
+  "Assam",
+  "Goa",
+  "Chandigarh",
+  "Jharkhand",
+  "Odisha",
+  "Nagaland",
+  "Manipur",
+  "Sikkim",
+  "Meghalaya",
+  "Mizoram",
 ];
-
-/* =========================================================
-   PROTOTYPE HOTSPOT DATA
-========================================================= */
-
-const hotspotData = [
-  /* =========================
-     RAJASTHAN
-  ========================= */
-
-  {
-    id: 1,
-    state: "Rajasthan",
-    city: "Jaipur",
-    location: "NH-48 Jaipur",
-    lat: 26.9124,
-    lng: 75.7873,
-    roadType: "National Highway",
-    cause: "Overspeeding",
-    risk: 91,
-    recent: 42,
-    previous: 37,
-  },
-  {
-    id: 2,
-    state: "Rajasthan",
-    city: "Jaipur",
-    location: "MI Road",
-    lat: 26.9157,
-    lng: 75.8013,
-    roadType: "Urban Road",
-    cause: "Heavy Traffic",
-    risk: 84,
-    recent: 31,
-    previous: 27,
-  },
-  {
-    id: 3,
-    state: "Rajasthan",
-    city: "Jaipur",
-    location: "Ajmer Road",
-    lat: 26.8908,
-    lng: 75.7441,
-    roadType: "State Highway",
-    cause: "Poor Road Conditions",
-    risk: 61,
-    recent: 24,
-    previous: 17,
-  },
-  {
-    id: 4,
-    state: "Rajasthan",
-    city: "Jaipur",
-    location: "Tonk Road",
-    lat: 26.8467,
-    lng: 75.8056,
-    roadType: "Urban Road",
-    cause: "Traffic Congestion",
-    risk: 43,
-    recent: 11,
-    previous: 18,
-  },
-  {
-    id: 5,
-    state: "Rajasthan",
-    city: "Jaipur",
-    location: "Agra Road Junction",
-    lat: 26.9451,
-    lng: 75.8613,
-    roadType: "Junction",
-    cause: "Intersection Conflict",
-    risk: 55,
-    recent: 16,
-    previous: 15,
-  },
-  {
-    id: 6,
-    state: "Rajasthan",
-    city: "Kota",
-    location: "Kota Road Corridor",
-    lat: 25.2138,
-    lng: 75.8648,
-    roadType: "Highway",
-    cause: "Overspeeding",
-    risk: 76,
-    recent: 26,
-    previous: 20,
-  },
-  {
-    id: 7,
-    state: "Rajasthan",
-    city: "Jodhpur",
-    location: "Jodhpur Road Segment",
-    lat: 26.2389,
-    lng: 73.0243,
-    roadType: "State Highway",
-    cause: "Poor Visibility",
-    risk: 39,
-    recent: 8,
-    previous: 14,
-  },
-  {
-    id: 8,
-    state: "Rajasthan",
-    city: "Jaipur",
-    location: "Jaipur Ring Road East",
-    lat: 26.8617,
-    lng: 75.9137,
-    roadType: "Ring Road",
-    cause: "Lane Discipline",
-    risk: 54,
-    recent: 18,
-    previous: 12,
-  },
-  {
-    id: 9,
-    state: "Rajasthan",
-    city: "Alwar",
-    location: "Alwar Highway Segment",
-    lat: 27.553,
-    lng: 76.6346,
-    roadType: "Highway",
-    cause: "Heavy Traffic",
-    risk: 51,
-    recent: 16,
-    previous: 10,
-  },
-
-  /* =========================
-     HARYANA
-  ========================= */
-
-  {
-    id: 10,
-    state: "Haryana",
-    city: "Gurugram",
-    location: "NH-48 Gurugram",
-    lat: 28.4595,
-    lng: 77.0266,
-    roadType: "National Highway",
-    cause: "Heavy Traffic",
-    risk: 88,
-    recent: 39,
-    previous: 34,
-  },
-  {
-    id: 11,
-    state: "Haryana",
-    city: "Faridabad",
-    location: "Mathura Road",
-    lat: 28.4089,
-    lng: 77.3178,
-    roadType: "Urban Highway",
-    cause: "Lane Discipline",
-    risk: 72,
-    recent: 28,
-    previous: 23,
-  },
-  {
-    id: 12,
-    state: "Haryana",
-    city: "Panipat",
-    location: "Panipat Highway",
-    lat: 29.3909,
-    lng: 76.9635,
-    roadType: "National Highway",
-    cause: "Overspeeding",
-    risk: 79,
-    recent: 25,
-    previous: 21,
-  },
-  {
-    id: 13,
-    state: "Haryana",
-    city: "Hisar",
-    location: "Hisar Bypass",
-    lat: 29.1492,
-    lng: 75.7217,
-    roadType: "Bypass",
-    cause: "Poor Road Conditions",
-    risk: 48,
-    recent: 14,
-    previous: 12,
-  },
-  {
-    id: 25,
-    state: "Haryana",
-    city: "Rohtak",
-    location: "Rohtak Bypass",
-    lat: 28.8955,
-    lng: 76.6066,
-    roadType: "Bypass",
-    cause: "Heavy Traffic",
-    risk: 63,
-    recent: 21,
-    previous: 17,
-  },
-  {
-    id: 26,
-    state: "Haryana",
-    city: "Karnal",
-    location: "Karnal NH Corridor",
-    lat: 29.6857,
-    lng: 76.9905,
-    roadType: "National Highway",
-    cause: "Overspeeding",
-    risk: 73,
-    recent: 24,
-    previous: 19,
-  },
-  {
-    id: 27,
-    state: "Haryana",
-    city: "Ambala",
-    location: "Ambala Highway Junction",
-    lat: 30.3782,
-    lng: 76.7767,
-    roadType: "Highway Junction",
-    cause: "Intersection Conflict",
-    risk: 52,
-    recent: 14,
-    previous: 13,
-  },
-
-  /* =========================
-     PUNJAB
-  ========================= */
-
-  {
-    id: 14,
-    state: "Punjab",
-    city: "Ludhiana",
-    location: "Ludhiana Bypass",
-    lat: 30.901,
-    lng: 75.8573,
-    roadType: "Bypass",
-    cause: "Heavy Traffic",
-    risk: 81,
-    recent: 32,
-    previous: 27,
-  },
-  {
-    id: 15,
-    state: "Punjab",
-    city: "Amritsar",
-    location: "Amritsar Highway",
-    lat: 31.634,
-    lng: 74.8723,
-    roadType: "National Highway",
-    cause: "Overspeeding",
-    risk: 74,
-    recent: 27,
-    previous: 22,
-  },
-  {
-    id: 16,
-    state: "Punjab",
-    city: "Jalandhar",
-    location: "Jalandhar Junction",
-    lat: 31.326,
-    lng: 75.5762,
-    roadType: "Junction",
-    cause: "Intersection Conflict",
-    risk: 56,
-    recent: 15,
-    previous: 12,
-  },
-  {
-    id: 17,
-    state: "Punjab",
-    city: "Bathinda",
-    location: "Bathinda Road",
-    lat: 30.211,
-    lng: 74.9455,
-    roadType: "State Highway",
-    cause: "Poor Visibility",
-    risk: 44,
-    recent: 10,
-    previous: 15,
-  },
-  {
-    id: 28,
-    state: "Punjab",
-    city: "Patiala",
-    location: "Patiala Bypass",
-    lat: 30.3398,
-    lng: 76.3869,
-    roadType: "Bypass",
-    cause: "Lane Discipline",
-    risk: 62,
-    recent: 19,
-    previous: 14,
-  },
-  {
-    id: 29,
-    state: "Punjab",
-    city: "Mohali",
-    location: "Mohali Junction",
-    lat: 30.7046,
-    lng: 76.7179,
-    roadType: "Urban Junction",
-    cause: "Heavy Traffic",
-    risk: 69,
-    recent: 25,
-    previous: 20,
-  },
-  {
-    id: 30,
-    state: "Punjab",
-    city: "Hoshiarpur",
-    location: "Hoshiarpur Highway",
-    lat: 31.5143,
-    lng: 75.9115,
-    roadType: "State Highway",
-    cause: "Poor Road Conditions",
-    risk: 47,
-    recent: 13,
-    previous: 11,
-  },
-
-  /* =========================
-     UTTAR PRADESH
-  ========================= */
-
-  {
-    id: 18,
-    state: "Uttar Pradesh",
-    city: "Agra",
-    location: "Agra-Lucknow Expressway",
-    lat: 27.1767,
-    lng: 78.0081,
-    roadType: "Expressway",
-    cause: "Overspeeding",
-    risk: 86,
-    recent: 35,
-    previous: 28,
-  },
-  {
-    id: 19,
-    state: "Uttar Pradesh",
-    city: "Mathura",
-    location: "Mathura Highway",
-    lat: 27.4924,
-    lng: 77.6737,
-    roadType: "National Highway",
-    cause: "Heavy Traffic",
-    risk: 68,
-    recent: 23,
-    previous: 20,
-  },
-  {
-    id: 20,
-    state: "Uttar Pradesh",
-    city: "Meerut",
-    location: "Meerut Bypass",
-    lat: 28.9845,
-    lng: 77.7064,
-    roadType: "Bypass",
-    cause: "Lane Discipline",
-    risk: 53,
-    recent: 16,
-    previous: 11,
-  },
-  {
-    id: 31,
-    state: "Uttar Pradesh",
-    city: "Lucknow",
-    location: "Lucknow Ring Road",
-    lat: 26.8467,
-    lng: 80.9462,
-    roadType: "Ring Road",
-    cause: "Heavy Traffic",
-    risk: 78,
-    recent: 30,
-    previous: 24,
-  },
-  {
-    id: 32,
-    state: "Uttar Pradesh",
-    city: "Kanpur",
-    location: "Kanpur Highway Corridor",
-    lat: 26.4499,
-    lng: 80.3319,
-    roadType: "National Highway",
-    cause: "Overspeeding",
-    risk: 74,
-    recent: 27,
-    previous: 22,
-  },
-  {
-    id: 33,
-    state: "Uttar Pradesh",
-    city: "Meerut",
-    location: "Delhi-Meerut Corridor",
-    lat: 28.9845,
-    lng: 77.7064,
-    roadType: "Expressway",
-    cause: "Lane Discipline",
-    risk: 59,
-    recent: 18,
-    previous: 13,
-  },
-
-  /* =========================
-     MADHYA PRADESH
-  ========================= */
-
-  {
-    id: 21,
-    state: "Madhya Pradesh",
-    city: "Indore",
-    location: "Indore Bypass",
-    lat: 22.7196,
-    lng: 75.8577,
-    roadType: "Bypass",
-    cause: "Heavy Traffic",
-    risk: 77,
-    recent: 29,
-    previous: 24,
-  },
-  {
-    id: 22,
-    state: "Madhya Pradesh",
-    city: "Bhopal",
-    location: "Bhopal Highway",
-    lat: 23.2599,
-    lng: 77.4126,
-    roadType: "National Highway",
-    cause: "Poor Road Conditions",
-    risk: 58,
-    recent: 18,
-    previous: 15,
-  },
-  {
-    id: 34,
-    state: "Madhya Pradesh",
-    city: "Gwalior",
-    location: "Gwalior Bypass",
-    lat: 26.2183,
-    lng: 78.1828,
-    roadType: "Bypass",
-    cause: "Overspeeding",
-    risk: 66,
-    recent: 22,
-    previous: 17,
-  },
-  {
-    id: 35,
-    state: "Madhya Pradesh",
-    city: "Ujjain",
-    location: "Ujjain Highway Junction",
-    lat: 23.1765,
-    lng: 75.7885,
-    roadType: "Highway Junction",
-    cause: "Intersection Conflict",
-    risk: 49,
-    recent: 14,
-    previous: 12,
-  },
-  {
-    id: 36,
-    state: "Madhya Pradesh",
-    city: "Sagar",
-    location: "Sagar Highway",
-    lat: 23.8388,
-    lng: 78.7378,
-    roadType: "State Highway",
-    cause: "Poor Visibility",
-    risk: 46,
-    recent: 15,
-    previous: 10,
-  },
-
-  /* =========================
-     GUJARAT
-  ========================= */
-
-  {
-    id: 23,
-    state: "Gujarat",
-    city: "Ahmedabad",
-    location: "Ahmedabad Ring Road",
-    lat: 23.0225,
-    lng: 72.5714,
-    roadType: "Ring Road",
-    cause: "Heavy Traffic",
-    risk: 83,
-    recent: 34,
-    previous: 29,
-  },
-  {
-    id: 24,
-    state: "Gujarat",
-    city: "Vadodara",
-    location: "Vadodara Expressway",
-    lat: 22.3072,
-    lng: 73.1812,
-    roadType: "Expressway",
-    cause: "Overspeeding",
-    risk: 71,
-    recent: 22,
-    previous: 18,
-  },
-  {
-    id: 37,
-    state: "Gujarat",
-    city: "Surat",
-    location: "Surat Outer Ring Road",
-    lat: 21.1702,
-    lng: 72.8311,
-    roadType: "Ring Road",
-    cause: "Heavy Traffic",
-    risk: 76,
-    recent: 28,
-    previous: 23,
-  },
-  {
-    id: 38,
-    state: "Gujarat",
-    city: "Rajkot",
-    location: "Rajkot Highway Corridor",
-    lat: 22.3039,
-    lng: 70.8022,
-    roadType: "National Highway",
-    cause: "Overspeeding",
-    risk: 67,
-    recent: 20,
-    previous: 15,
-  },
-  {
-    id: 39,
-    state: "Gujarat",
-    city: "Palanpur",
-    location: "Palanpur Highway",
-    lat: 24.1717,
-    lng: 72.4382,
-    roadType: "Highway",
-    cause: "Poor Road Conditions",
-    risk: 42,
-    recent: 9,
-    previous: 13,
-  },
-];
-
 /* =========================================================
    MAP CONTROLLER
 ========================================================= */
 
-function MapController({ center, focusSpot }) {
+function MapController({ center, focusSpot ,zoom}) {
   const map = useMap();
 
   React.useEffect(() => {
@@ -591,11 +72,11 @@ function MapController({ center, focusSpot }) {
         }
       );
     } else {
-      map.flyTo(center, 7, {
+      map.flyTo(center, zoom, {
         duration: 1.1,
       });
     }
-  }, [center, focusSpot, map]);
+  }, [center, focusSpot, map, zoom]);
 
   return null;
 }
@@ -604,19 +85,7 @@ function MapController({ center, focusSpot }) {
    HELPERS
 ========================================================= */
 
-function getActivityChange(item) {
-  if (!item.previous) return 0;
-
-  return Math.round(
-    ((item.recent - item.previous) /
-      item.previous) *
-      100
-  );
-}
-
 function getHotspotStatus(item) {
-  const change = getActivityChange(item);
-
   if (item.risk >= 80) {
     return {
       key: "critical",
@@ -633,15 +102,7 @@ function getHotspotStatus(item) {
     };
   }
 
-  if (change >= 20 && item.risk >= 45) {
-    return {
-      key: "emerging",
-      label: "Emerging Hotspot",
-      color: "#9ca3af",
-    };
-  }
-
-  if (item.risk >= 45 && change > -20) {
+  if (item.risk >= 45) {
     return {
       key: "watch",
       label: "Watch Area",
@@ -657,7 +118,6 @@ function getHotspotStatus(item) {
 }
 
 function getStatusReason(item) {
-  const change = getActivityChange(item);
   const status = getHotspotStatus(item);
 
   if (status.key === "critical") {
@@ -666,10 +126,6 @@ function getStatusReason(item) {
 
   if (status.key === "high") {
     return `Elevated risk (${item.risk}/100) requiring focused corrective action.`;
-  }
-
-  if (status.key === "emerging") {
-    return `Recent accident activity increased by ${change}% compared with the previous period.`;
   }
 
   if (status.key === "watch") {
@@ -732,7 +188,7 @@ function getProblems(item) {
 
     default:
       return [
-        "Recent accident activity requires investigation.",
+        "Historical accident concentration requires investigation.",
         "Field conditions should be reviewed.",
         "Continued monitoring is recommended.",
       ];
@@ -802,7 +258,7 @@ function getActionPlan(item) {
     default:
       actions.push(
         "Conduct field inspection.",
-        "Review recent accident activity.",
+        "Review historical accident activity.",
         "Continue targeted monitoring."
       );
   }
@@ -810,21 +266,11 @@ function getActionPlan(item) {
   const status = getHotspotStatus(item);
 
   if (status.key === "critical") {
-    actions.unshift(
-      "Priority intervention required."
-    );
+    actions.unshift("Priority intervention required.");
   }
 
   if (status.key === "high") {
-    actions.unshift(
-      "Focused corrective action recommended."
-    );
-  }
-
-  if (status.key === "emerging") {
-    actions.unshift(
-      "Early intervention recommended before risk escalates."
-    );
+    actions.unshift("Focused corrective action recommended.");
   }
 
   if (status.key === "watch") {
@@ -847,8 +293,69 @@ function getActionPlan(item) {
 ========================================================= */
 
 export default function BlackSpots() {
+  const [hotspotData, setHotspotData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchHotspots = async () => {
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8001/api/hotspots"
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch hotspots");
+        }
+
+        const data = await response.json();
+
+        const formattedHotspots = data.hotspots.map((spot) => ({
+          id: spot.cluster_id,
+          state: spot.state,
+          city: spot.city,
+
+          location:
+            spot.city && spot.city !== "Nil"
+              ? `${spot.city} Cluster ${spot.cluster_id}`
+              : `Cluster ${spot.cluster_id}`,
+
+          lat: spot.latitude,
+          lng: spot.longitude,
+
+          // Analytical hotspot information from DBSCAN backend data
+          roadType: "Historical Accident Hotspot",
+          cause: "Historical Accident Concentration",
+
+          // Historical DBSCAN hotspot score
+          risk: Math.round(spot.hotspot_score),
+
+          // Total crashes inside the cluster
+          crashCount: spot.crash_count,
+
+          // Accident impact information
+          totalKilled: spot.total_killed,
+          totalInjured: spot.total_injured,
+          fatalitiesPer100: spot.fatalities_per_100_crashes,
+
+          // Backend risk classification
+          riskLevel: spot.risk_level,
+        }));
+
+        setHotspotData(formattedHotspots);
+      } catch (err) {
+        console.error("Error fetching hotspots:", err);
+        setError("Unable to load hotspot data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHotspots();
+  }, []);
+
   const [selectedState, setSelectedState] =
-    useState("Rajasthan");
+    useState("All");
 
   const [statusFilter, setStatusFilter] =
     useState("all");
@@ -868,9 +375,38 @@ export default function BlackSpots() {
 
   const stateSpots = useMemo(() => {
     return hotspotData.filter(
-      (item) => item.state === selectedState
-    );
-  }, [selectedState]);
+  (item) =>
+    selectedState === "All" ||
+    item.state === selectedState
+);
+  }, [hotspotData, selectedState]);
+
+
+
+const mapCenter = useMemo(() => {
+  if (selectedState === "All") {
+    return [22.5, 79.0];
+  }
+
+  if (stateCenters[selectedState]) {
+    return stateCenters[selectedState];
+  }
+
+  if (stateSpots.length > 0) {
+    const avgLat =
+      stateSpots.reduce((sum, spot) => sum + Number(spot.lat), 0) /
+      stateSpots.length;
+
+    const avgLng =
+      stateSpots.reduce((sum, spot) => sum + Number(spot.lng), 0) /
+      stateSpots.length;
+
+    return [avgLat, avgLng];
+  }
+
+  return [22.5, 79.0];
+}, [selectedState, stateSpots]);
+
 
   /* =======================================================
      FILTERED DATA
@@ -908,26 +444,17 @@ export default function BlackSpots() {
   const stats = useMemo(() => {
     const critical = stateSpots.filter(
       (item) =>
-        getHotspotStatus(item).key ===
-        "critical"
+        getHotspotStatus(item).key === "critical"
     ).length;
 
     const high = stateSpots.filter(
       (item) =>
-        getHotspotStatus(item).key ===
-        "high"
-    ).length;
-
-    const emerging = stateSpots.filter(
-      (item) =>
-        getHotspotStatus(item).key ===
-        "emerging"
+        getHotspotStatus(item).key === "high"
     ).length;
 
     const watch = stateSpots.filter(
       (item) =>
-        getHotspotStatus(item).key ===
-        "watch"
+        getHotspotStatus(item).key === "watch"
     ).length;
 
     const averageRisk =
@@ -945,7 +472,6 @@ export default function BlackSpots() {
       total: stateSpots.length,
       critical,
       high,
-      emerging,
       watch,
       averageRisk,
     };
@@ -1089,11 +615,6 @@ export default function BlackSpots() {
           </span>
 
           <span>
-            <i className="guide-dot emerging"></i>
-            Emerging
-          </span>
-
-          <span>
             <i className="guide-dot watch"></i>
             Watch
           </span>
@@ -1149,18 +670,6 @@ export default function BlackSpots() {
           </small>
         </div>
 
-        <div className="summary-card gray">
-          <span>Emerging</span>
-
-          <strong>
-            {stats.emerging}
-          </strong>
-
-          <small>
-            Activity increasing
-          </small>
-        </div>
-
         <div className="summary-card yellow">
           <span>Watch Areas</span>
 
@@ -1188,6 +697,34 @@ export default function BlackSpots() {
       </div>
 
       {/* =================================================
+          LOADING / ERROR
+      ================================================= */}
+
+      {loading && (
+        <div className="no-hotspots">
+          <strong>
+            Loading hotspot data...
+          </strong>
+
+          <span>
+            Fetching accident hotspot information from the server.
+          </span>
+        </div>
+      )}
+
+      {error && !loading && (
+        <div className="no-hotspots">
+          <strong>
+            Unable to load hotspot data
+          </strong>
+
+          <span>
+            Please make sure the FastAPI backend is running.
+          </span>
+        </div>
+      )}
+
+      {/* =================================================
           MAIN GRID
       ================================================= */}
 
@@ -1206,9 +743,11 @@ export default function BlackSpots() {
                 GEOGRAPHICAL INTELLIGENCE
               </span>
 
-              <h2>
-                {selectedState} Accident Hotspots
-              </h2>
+                <h2>
+  {selectedState === "All"
+    ? "India Accident Hotspots"
+    : `${selectedState} Accident Hotspots`}
+</h2>
             </div>
 
             <div className="map-count">
@@ -1220,15 +759,16 @@ export default function BlackSpots() {
           <div className="blackspots-map-wrapper">
 
             <MapContainer
-              center={stateCenters[selectedState]}
+              center={mapCenter}
               zoom={7}
               scrollWheelZoom={true}
               className="blackspots-map"
             >
 
               <MapController
-                center={stateCenters[selectedState]}
+                center={mapCenter}
                 focusSpot={focusSpot}
+                  zoom={selectedState === "All" ? 5 : 7}
               />
 
               <TileLayer
@@ -1237,6 +777,7 @@ export default function BlackSpots() {
               />
 
               {filteredSpots.map((spot) => {
+
                 const status =
                   getHotspotStatus(spot);
 
@@ -1292,7 +833,7 @@ export default function BlackSpots() {
                         </div>
 
                         <div>
-                          <b>Cause:</b>{" "}
+                          <b>Hotspot Type:</b>{" "}
                           {spot.cause}
                         </div>
 
@@ -1331,11 +872,6 @@ export default function BlackSpots() {
               <span>
                 <i className="legend-dot high"></i>
                 High Risk
-              </span>
-
-              <span>
-                <i className="legend-dot emerging"></i>
-                Emerging
               </span>
 
               <span>
@@ -1380,7 +916,7 @@ export default function BlackSpots() {
 
             <input
               type="text"
-              placeholder="Search location, city or cause..."
+              placeholder="Search location, city or hotspot type..."
               value={search}
               onChange={(e) =>
                 setSearch(e.target.value)
@@ -1430,19 +966,6 @@ export default function BlackSpots() {
               }
             >
               High
-            </button>
-
-            <button
-              className={
-                statusFilter === "emerging"
-                  ? "active emerging-btn"
-                  : ""
-              }
-              onClick={() =>
-                setStatusFilter("emerging")
-              }
-            >
-              Emerging
             </button>
 
             <button
@@ -1498,9 +1021,6 @@ export default function BlackSpots() {
                 const status =
                   getHotspotStatus(spot);
 
-                const change =
-                  getActivityChange(spot);
-
                 return (
                   <div
                     key={spot.id}
@@ -1514,6 +1034,7 @@ export default function BlackSpots() {
                     <div className="hotspot-item-top">
 
                       <div>
+
                         <strong>
                           {spot.location}
                         </strong>
@@ -1522,6 +1043,7 @@ export default function BlackSpots() {
                           {spot.city},{" "}
                           {spot.state}
                         </span>
+
                       </div>
 
                       <span
@@ -1545,27 +1067,10 @@ export default function BlackSpots() {
                       </span>
 
                       <span>
-                        Recent
+                        Crashes
                         <b>
-                          {spot.recent}
+                          {spot.crashCount}
                         </b>
-                      </span>
-
-                      <span
-                        className={
-                          change > 0
-                            ? "trend-up"
-                            : change < 0
-                            ? "trend-down"
-                            : ""
-                        }
-                      >
-                        {change > 0
-                          ? "↑"
-                          : change < 0
-                          ? "↓"
-                          : "→"}{" "}
-                        {Math.abs(change)}%
                       </span>
 
                     </div>
@@ -1624,6 +1129,7 @@ export default function BlackSpots() {
           <div className="selected-hotspot-heading">
 
             <div>
+
               <span className="card-kicker">
                 HOTSPOT DETAILS
               </span>
@@ -1638,6 +1144,7 @@ export default function BlackSpots() {
                 {" • "}
                 {selectedSpot.roadType}
               </p>
+
             </div>
 
             <button
@@ -1696,7 +1203,7 @@ export default function BlackSpots() {
               </strong>
 
               <small>
-                Current prototype risk profile
+                DBSCAN historical hotspot score
               </small>
 
             </div>
@@ -1704,26 +1211,15 @@ export default function BlackSpots() {
             <div className="detail-box">
 
               <span>
-                Accident Activity
+                Accident Count
               </span>
 
               <strong>
-                {selectedSpot.recent}
+                {selectedSpot.crashCount}
               </strong>
 
               <small>
-                Previous period:{" "}
-                {selectedSpot.previous}
-                {" • "}
-                {getActivityChange(
-                  selectedSpot
-                ) > 0
-                  ? "Increasing"
-                  : getActivityChange(
-                      selectedSpot
-                    ) < 0
-                  ? "Declining"
-                  : "Stable"}
+                Total accidents within this DBSCAN cluster.
               </small>
 
             </div>
@@ -1731,7 +1227,57 @@ export default function BlackSpots() {
             <div className="detail-box">
 
               <span>
-                Primary Cause
+                Fatalities
+              </span>
+
+              <strong>
+                {selectedSpot.totalKilled}
+              </strong>
+
+              <small>
+                Total deaths within this DBSCAN cluster.
+              </small>
+
+            </div>
+
+            <div className="detail-box">
+
+              <span>
+                Injuries
+              </span>
+
+              <strong>
+                {selectedSpot.totalInjured}
+              </strong>
+
+              <small>
+                Total injuries within this DBSCAN cluster.
+              </small>
+
+            </div>
+
+            <div className="detail-box">
+
+              <span>
+                Fatalities / 100 Crashes
+              </span>
+
+              <strong>
+                {Number(
+                  selectedSpot.fatalitiesPer100
+                ).toFixed(2)}
+              </strong>
+
+              <small>
+                Fatalities relative to cluster accident count.
+              </small>
+
+            </div>
+
+            <div className="detail-box">
+
+              <span>
+                Hotspot Type
               </span>
 
               <strong>
@@ -1739,8 +1285,7 @@ export default function BlackSpots() {
               </strong>
 
               <small>
-                Main risk factor associated
-                with this hotspot.
+                Based on historical accident clustering.
               </small>
 
             </div>
@@ -1769,6 +1314,7 @@ export default function BlackSpots() {
 
               {getProblems(selectedSpot).map(
                 (problem, index) => (
+
                   <div
                     className="problem-item"
                     key={index}
@@ -1783,6 +1329,7 @@ export default function BlackSpots() {
                     </p>
 
                   </div>
+
                 )
               )}
 
@@ -1812,6 +1359,7 @@ export default function BlackSpots() {
 
               {getActionPlan(selectedSpot).map(
                 (action, index) => (
+
                   <div
                     className="action-plan-item"
                     key={index}
@@ -1826,6 +1374,7 @@ export default function BlackSpots() {
                     </p>
 
                   </div>
+
                 )
               )}
 
@@ -1843,9 +1392,11 @@ export default function BlackSpots() {
       <div className="status-explanation-panel">
 
         <div>
+
           <span className="status-big-dot critical"></span>
 
           <div>
+
             <strong>
               Critical
             </strong>
@@ -1854,13 +1405,17 @@ export default function BlackSpots() {
               Very high risk + concentrated
               accident activity
             </small>
+
           </div>
+
         </div>
 
         <div>
+
           <span className="status-big-dot high"></span>
 
           <div>
+
             <strong>
               High Risk
             </strong>
@@ -1869,27 +1424,17 @@ export default function BlackSpots() {
               Elevated risk requiring focused
               intervention
             </small>
+
           </div>
+
         </div>
 
         <div>
-          <span className="status-big-dot emerging"></span>
 
-          <div>
-            <strong>
-              Emerging
-            </strong>
-
-            <small>
-              Recent accident activity increasing
-            </small>
-          </div>
-        </div>
-
-        <div>
           <span className="status-big-dot watch"></span>
 
           <div>
+
             <strong>
               Watch
             </strong>
@@ -1898,13 +1443,17 @@ export default function BlackSpots() {
               Moderate/stable activity requiring
               observation
             </small>
+
           </div>
+
         </div>
 
         <div>
+
           <span className="status-big-dot monitored"></span>
 
           <div>
+
             <strong>
               Monitored
             </strong>
@@ -1912,7 +1461,9 @@ export default function BlackSpots() {
             <small>
               Lower or declining activity
             </small>
+
           </div>
+
         </div>
 
       </div>
