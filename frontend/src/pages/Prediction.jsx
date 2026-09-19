@@ -37,7 +37,7 @@ function Prediction() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8001/api/predict-risk", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/predict-risk`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
