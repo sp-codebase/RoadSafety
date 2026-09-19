@@ -300,10 +300,9 @@ export default function BlackSpots() {
   useEffect(() => {
     const fetchHotspots = async () => {
       try {
-        const response = await fetch(
-          "http://127.0.0.1:8001/api/hotspots"
-        );
-
+       const response = await fetch(
+  `${import.meta.env.VITE_API_URL}/api/hotspots`
+);
         if (!response.ok) {
           throw new Error("Failed to fetch hotspots");
         }
